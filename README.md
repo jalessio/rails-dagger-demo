@@ -1,24 +1,39 @@
-# README
+# Dagger + Ruby on Rails Demo
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is a demo of using [Dagger](https://dagger.io/) with a [Ruby on Rails](https://rubyonrails.org/) application.
 
-Things you may want to cover:
+**NOTE: You'll need Docker running on your system to run the example.**
 
-* Ruby version
+## Dagger
 
-* System dependencies
+The Dagger code of interest is located in `dagger/src/main/rails.py`.
 
-* Configuration
+To run the code there do the following:
 
-* Database creation
+### Install Dagger
 
-* Database initialization
+Full installation instructions at [https://docs.dagger.io/install/](https://docs.dagger.io/install/). For quickstart on macOS run:
 
-* How to run the test suite
+```
+brew install dagger/tap/dagger
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+### Run Dagger Functions
 
-* Deployment instructions
+Build a Docker image, generate a database schema cache file in the image, and publish the image to the ephemeral Docker registry at [https://ttl.sh/](https://ttl.sh/):
 
-* ...
+```
+dagger call publish-to-ttl --source .
+```
+
+You can now pull that Docker image from anywhere in the world and work with it. Let's cat the contents of the db schema cache file:
+
+```
+docker run --pull=always --rm ttl.sh/hsoidgfha9pe8r9:1h cat db/schema_cache.yml
+```
+
+Run the `rails test` command inside of a Docker container that is built from the `Dockerfile` in this repo:
+
+```
+dagger call rails-test --source .
+```
